@@ -1,5 +1,3 @@
-#require 'httparty'
-#require 'zlib'
 require 'rubygems/package'
 require 'dcf'
 
