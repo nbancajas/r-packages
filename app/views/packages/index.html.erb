@@ -1,0 +1,13 @@
+<h1 class='title is-1'>R Packages</h1>
+
+<%= paginate @packages %>
+
+<%= render 'components/index_table',
+  attrs: [#{ label: 'ID',             value: ->(package) { package.id } },
+          { label: 'Name',           value: ->(package) { link_to(package.name, package_path(package.id)) } },
+          { label: 'Latest Version', value: ->(package) { link_to(package.version, package_path(package.id)) } },
+    ],
+  collection: @packages %>
+
+<%= paginate @packages %>
+

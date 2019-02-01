@@ -1,0 +1,32 @@
+<h1 class='title is-1'><%= link_to 'R Packages', packages_path %> / <%= @package.name %></h1>
+
+<table class="ui table is-narrow is-striped">
+  <tbody>
+    <% [
+      #{label: 'ID', value: @package.id},
+      { label: 'Name',                value: @package.name },
+      { label: 'Version',             value: @package.version },
+      { label: 'Date of Publication', value: @package.latest_version.publication_date },
+      { label: 'Title',               value: @package.latest_version.title },
+      { label: 'Description',         value: @package.latest_version.description },
+      { label: 'Authors',             value: @package.latest_version.authors.map(&:name).join(', ') },
+      { label: 'Maintainer',          value: @package.latest_version.maintainer.name_with_email },
+      { label: 'Link',                value: link_to('download', RemotePackage.new(@package.name, @package.version).url) },
+    ].each do |info| %>
+      <tr>
+        <td><%= info[:label] %></td>
+        <td><%= info[:value] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% @old_versions = @package.versions.select { |pv| pv.version != @package.version }.sort { |pv| pv.publication_date } %>
+
+<% if @old_versions.present? %>
+  <h3 class='title is-3'>Older Versions</h3>
+
+  <% @old_versions.each do |old_version| %>
+    <p><%= old_version.version %> | Published <%= old_version.publication_date %></p>
+  <% end %>
+<% end %>

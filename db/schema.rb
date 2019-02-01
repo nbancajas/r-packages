@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_31_193556) do
+ActiveRecord::Schema.define(version: 2019_02_01_111500) do
+
+  create_table "contributors", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "contributors_package_versions", force: :cascade do |t|
+    t.integer "contributor_id"
+    t.integer "package_version_id"
+    t.string "role", default: "maintainer", null: false
+    t.index ["contributor_id"], name: "index_contributors_package_versions_on_contributor_id"
+    t.index ["package_version_id"], name: "index_contributors_package_versions_on_package_version_id"
+  end
 
   create_table "package_versions", force: :cascade do |t|
     t.integer "package_id", null: false
@@ -18,7 +33,6 @@ ActiveRecord::Schema.define(version: 2019_01_31_193556) do
     t.date "publication_date"
     t.string "title"
     t.text "description"
-    t.integer "maintainer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["package_id"], name: "index_package_versions_on_package_id"

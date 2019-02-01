@@ -1,12 +1,9 @@
 class PersistPackagesWorker
-  attr_reader :packages, :packages_to_index
+  include Sidekiq::Worker
 
-  def initialize(packages)
-    @packages = packages
+  def perform(packages)
     @packages_to_index = {}
-  end
 
-  def perform
     packages.each_slice(100) do |batch|
       package_names = batch.map { |package| package["Package"] }
 
@@ -14,8 +11,7 @@ class PersistPackagesWorker
       create_unindexed_packages(batch, package_names)
     end
 
-    # TODO: call worker to enqueue downloading, unpacking, and reading DESCRIPTION
-    # SomeWorker.enqueue(packages_to_index)
+    UpdatePackagesDescriptionWorker.perform_async(@packages_to_index)
   end
 
   private

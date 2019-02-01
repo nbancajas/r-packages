@@ -1,17 +1,20 @@
 class PackagesParser
-  attr_reader :packages_path
+  class << self
+    def perform
+      get_packages do |contents|
+        FastDcf.parse(contents).first(ENV['PACKAGES_COUNT'].to_i)
+      end
+    end
 
-  def initialize
-    @packages_path = Rails.root.join("lib/packages/PACKAGES")
-  end
+    private
 
-  def perform
-    FastDcf.parse(contents)
-  end
+    def url
+      @url ||= File.join(ENV['CRAN_HOST'], "PACKAGES")
+    end
 
-  private
-
-  def contents
-    IO.read(packages_path)
+    def get_packages
+      #yield IO.read(Rails.root.join("lib/packages/PACKAGES"))
+      yield HTTParty.get(url).body
+    end
   end
 end
